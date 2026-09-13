@@ -1,0 +1,127 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+- https://api.agilixbuzz.com/docs/entry/Concept/HttpResponseStatusCodes.md
+- https://api.agilixbuzz.com/docs/entry/Command/Login3.md
+name: Agilix Buzz (DLAP / xLi) error code registry
+description: >-
+  Buzz returns a proprietary error envelope, not RFC 9457 problem+json. Every response
+  carries a response.code; any value other than OK is a failure, and the provider's rule is
+  that a robust client treats every non-OK code as an error rather than enumerating them.
+  The general codes below are the documented set from Command Usage; the authentication
+  codes are the ones Login3/Login2 documents as requiring distinct client handling, which is
+  the one place the API asks callers to branch on a specific code.
+format: proprietary
+problem_json: false
+envelope:
+  success: '{"response": {"code": "OK", ...}}'
+  failure: '{"response": {"code": "<Code>", "message": "<string>", "errorId": "<guid>", "body": { ... }}}'
+  batch: 'Each member of responses.response[] carries its own code.'
+  http_status: >-
+    Most commands answer HTTP 200 and put the outcome in response.code. Browser-invoked
+    commands use conventional HTTP status codes instead.
+general_codes:
+- code: OK
+  meaning: Success
+  retry: n/a
+- code: Exception
+  meaning: General exception
+  retry: with exponential backoff, limited attempts
+- code: BadRequest
+  meaning: >-
+    Something about the request is invalid — usually a formatting issue or an inconsistency
+    between parameters.
+  retry: false
+- code: Argument
+  meaning: The arguments in the query string or post data are incorrect.
+  retry: false
+  remediation: Fix the arguments; never retry without resolving the issue.
+- code: InvalidCredential
+  meaning: The login credentials are invalid.
+  retry: false
+  remediation: >-
+    Re-authenticate before any retry. Documented as InvalidCredentials in the retry guidance
+    and InvalidCredential in the code table.
+- code: NoAuthentication
+  meaning: The authentication token does not exist or has expired.
+  retry: only after re-authenticating
+  remediation: Request a fresh Bearer token from the OAuth token endpoint.
+- code: AccessDenied
+  meaning: The user does not hold privileges for the operation.
+  retry: false
+  remediation: Grant the calling account the Right the command page names (e.g. DeleteCourse@courseid).
+- code: RateLimit
+  meaning: The per-endpoint rate limit for this API has been reached.
+  retry: true
+  remediation: Wait at least Retry-After seconds; read X-RateLimit-Reset for the window end.
+  http_status: 429
+- code: ServerOverwhelmed
+  meaning: The servers are too busy to handle the request.
+  retry: true
+  remediation: Honor Retry-After; ramp request volume up slowly to let autoscaling catch up.
+  http_status: 503
+authentication_codes:
+- code: DeactivatedUserOrDomain
+  meaning: The user or the domain was explicitly deactivated.
+  retry: false
+- code: LicenseLimitExceeded
+  meaning: The domain's license limit is exceeded for one or more of the user's personas.
+  retry: false
+- code: NoLicense
+  meaning: The domain has no license and no ancestor domain has one.
+  retry: false
+- code: LicenseExpired
+  meaning: The domain's license has expired.
+  retry: false
+- code: LicenseNotYetValid
+  meaning: The domain's license start date is in the future.
+  retry: false
+- code: PasswordExpired
+  meaning: >-
+    The password has expired under the domain policy; UpdatePassword is the only command the
+    user may call until it is changed.
+  retry: false
+- code: AccountLockout
+  meaning: The account is locked out after too many contiguous password failures.
+  retry: false
+- code: LoginMethodNotAllowed
+  meaning: >-
+    The account does not allow the login type attempted (for example password login on an
+    SSO-only user).
+  retry: false
+- code: PasswordPolicyRequirementsNotMet
+  meaning: >-
+    The password does not meet the active policy. Returned as an error when the policy
+    forces a reset, and as a warning on an otherwise successful response when the policy is
+    configured to warn.
+  retry: false
+  note: A reason attribute names which policy attribute was violated.
+- code: SecondFactorRequired
+  meaning: >-
+    Password was correct but a second factor is owed. The token returned is short-lived and
+    good only for SecondFactorAuthenticate.
+  retry: false
+- code: SecondFactorConfigurationNowRequired
+  meaning: >-
+    Policy now requires a second factor the user has not configured. The token returned is
+    good only for CreateSecondFactorAuthenticationSecret and SetupSecondFactorAuthentication.
+  retry: false
+http_status_codes:
+  note: >-
+    The provider names these as the codes a caller must handle because intermediate systems
+    (AWS load balancers, proxies) can emit them independently of the command.
+  codes: [400, 403, 404, 429, 500, 502, 503, 504]
+  retry_policy: >-
+    429 and 503 are never a consequence of the command or its parameters and may succeed on
+    retry; 400 is unlikely to; 401/403 may succeed only if the caller re-authenticates first;
+    408 is ambiguous. Provider ships a reference exponential-backoff implementation (1s to
+    64s, up to 5 attempts) in all seven sample clients.
+completeness:
+  documented_codes: 20
+  note: >-
+    The code table ends with an explicit "(various other codes)" row — the provider does not
+    publish an exhaustive registry, and individual command pages name further codes
+    (PasswordPolicyRequirementsNotMet, LicenseLimitExceeded and others surface this way).
+    This artifact captures the documented set, not a complete one.

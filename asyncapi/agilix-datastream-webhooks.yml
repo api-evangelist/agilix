@@ -1,0 +1,145 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/DataStream/Overview.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/DataStream/Overview.md
+- https://api.agilixbuzz.com/docs/entry/Concept/DataStream/Https.md
+- https://api.agilixbuzz.com/docs/entry/Concept/DataStream/EventSources.md
+- https://api.agilixbuzz.com/docs/entry/Command/SetDataStreamConfiguration.md
+name: Agilix Buzz Data Stream — event and webhook surface
+description: >-
+  Buzz publishes a first-class event surface called the Data Stream: a configurable feed of
+  JSON event notifications covering entity lifecycle, course content, grades, activity
+  tracking, inbox messages and security audit events. It is configured per domain with
+  SetDataStreamConfiguration and can be pointed at five target types, one of which — the
+  HTTPS target — is a conventional webhook. Roughly 70 event types are documented, each with
+  its own reference page naming the commands and background tasks that trigger it, and each
+  command page reciprocally lists the events it may emit. No AsyncAPI (or CloudEvents)
+  document is published for this surface; this artifact is the captured catalogue, not a
+  generated spec. No AsyncAPI was authored here — writing one would be fabricating a contract
+  the provider does not ship.
+asyncapi_spec_published: false
+asyncapi_probe:
+  urls:
+  - url: https://api.agilixbuzz.com/asyncapi.yaml
+    status: 404
+  - url: https://api.agilixbuzz.com/openapi.json
+    status: 404
+  checked: '2026-09-12'
+configuration:
+  command: SetDataStreamConfiguration
+  read_command: GetDataStreamConfiguration
+  validate_command: ValidateDataStreamConfiguration
+  scope: per domain; a domain inherits its ancestors' data stream targets
+  filtering: >-
+    A filter property selects both which event types and which properties are delivered. An
+    "overflow filter" carrying only object id and version numbers is substituted automatically
+    when a record would exceed the target's record-size limit.
+targets:
+- type: https
+  is_webhook: true
+  method: POST (default) or PUT
+  endpoints: one to five https:// URL templates, semicolon separated
+  url_template_variable: '{PartitionKey}'
+  timeout_seconds:
+    min: 1
+    max: 30
+    default: 2
+  retries_default: 2
+  total_attempt_budget_seconds: 30
+  success_criterion: endpoint must return a 2xx
+  redirects_allowed: false
+  tls_required: true
+  tls_note: Certificate must be issued by a publicly trusted CA (GoDaddy, AWS, Let's Encrypt named).
+  delivery_guarantee: at-most-once after the 30-second budget expires — "that event data will be lost"
+  ordering: >-
+    Not guaranteed across endpoints; the provider documents that failover to a secondary
+    endpoint can produce out-of-order timestamps and suggests using the object version number
+    to detect it.
+  backpressure_warning: >-
+    Many events are delivered synchronously while the originating API call is still running,
+    so a slow webhook endpoint directly slows the Buzz users who triggered it.
+  signing: not documented
+  note: >-
+    The provider explicitly recommends an AWS-hosted target over HTTPS for reliability and
+    performance, and frames the webhook as a convenience for cases where those matter less.
+- type: kinesis-firehose
+  is_webhook: false
+  note: >-
+    AWS Kinesis Firehose Delivery Stream. Firehose in turn can route to Amazon OpenSearch,
+    Redshift, S3, Coralogix, Datadog, Dynatrace, HTTP, Honeycomb, LogicMonitor, MongoDB Cloud,
+    New Relic, Splunk and Sumo Logic.
+- type: kinesis-data-stream
+  is_webhook: false
+- type: sqs
+  is_webhook: false
+- type: email
+  is_webhook: false
+  note: >-
+    Single configured address, intended for rare high-importance events only; rate limited to
+    a configurable number of emails per hour (default 10). Exceeding it emits a
+    DataStreamEmailDropped event.
+envelope:
+  format: JSON, one record per line, minimal whitespace
+  properties:
+  - name: time
+    description: UTC time of the event.
+  - name: guid
+    description: GUID uniquely identifying the action across data streams and domains.
+  - name: domainId
+    description: The domain where the event occurred.
+  - name: type
+    description: The event type name.
+  - name: data
+    description: Event-type-specific payload.
+  - name: userId
+    description: The user the action was taken as.
+  - name: agentUserId
+    description: The account that performed the action (differs from userId when proxied).
+  - name: sessionId
+    description: The session the action belonged to.
+  example: |
+    {"time":"2022-06-29T16:40:30.9926931Z","guid":"c7a820f6-36ed-48f6-8210-3581238d30a6","domainId":"1176022","type":"DomainEntityChanged","data":{},"userId":"93275","agentUserId":"2239","sessionId":"8655695467559064423"}
+event_count: 70
+event_groups:
+- group: Entity changes
+  events: [CourseAncestorChanged, CourseEntityChanged, CourseEntityCreated, CourseEntityDeleted,
+    CourseEntityRestored, DomainEntityChanged, DomainEntityCreated, DomainEntityDeleted,
+    DomainEntityRestored, EnrollmentEntityChanged, EnrollmentEntityCreated, EnrollmentEntityDeleted,
+    EnrollmentEntityRestored, GroupEntityChanged, GroupEntityCreated, GroupEntityDeleted,
+    GroupEntityMembersChanged, UserEntityChanged, UserEntityCreated, UserEntityDeleted,
+    UserEntityRestored]
+- group: Item changes
+  events: [CourseItemChanged, CourseItemCreated, CourseItemDeleted, CourseItemRestored,
+    EnrollmentItemChanged, EnrollmentItemCreated, EnrollmentItemDeleted, EnrollmentItemRestored,
+    GroupItemChanged, GroupItemCreated, GroupItemDeleted, GroupItemRestored]
+- group: Course content changes
+  events: [CourseResourceChanged, CourseResourceCreated, CourseResourceDeleted, CourseResourceRestored]
+- group: Grade changes
+  events: [GradeChanged, GradeCreated]
+- group: Enrollment metrics changes
+  events: [EnrollmentMetricsChanged, EnrollmentMetricsCreated]
+- group: Activity tracking
+  events: [CourseEntityActivity, DomainEntityActivity, EnrollmentEntityActivity, UserEntityActivity,
+    ItemActivity, UserSessionStarted, UserSessionEnded]
+- group: Inbox message changes
+  events: [InboxMessageChanged, InboxMessageCreated, InboxMessageDeleted, InboxMessageRestored]
+- group: Security audit — domain permissions
+  events: [DomainPermissionsChanged, DomainPermissionsCreated, DomainPermissionsDeleted]
+- group: Security audit — administrator account audits
+  events: [AuthAdminAuthenticated, AuthAdminContactInfoChanged, AuthAdminPasswordChanged,
+    AuthProxyLoginStarted, AuthProxyLoginFailed]
+- group: Security audit — general account audits
+  events: [AuthAccountLocked, AuthAccountUnlocked, AuthLoginFailed, AuthMFAFailed, AuthPasswordRisk,
+    OAuthClientKeyAdded, OAuthClientKeyRemoved]
+- group: Data stream configuration changes
+  events: [DataStreamConfigurationChanged, DataStreamConfigurationCreated, DataStreamConfigurationDeleted]
+- group: Miscellaneous
+  events: [DataStreamEmailDropped]
+delivery_timing:
+  synchronous: Sent before the originating command returns its response.
+  asynchronous: Sent after the command completes.
+  background: Sent during background task processing.
+  note: >-
+    Each event page states which of the three applies and under which conditions; each command
+    page carries a "Data Stream Events" table listing the events it may cause.

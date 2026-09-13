@@ -1,0 +1,45 @@
+# Agilix Labs
+
+> Agilix Labs is a K-12 education technology company based in Orem, Utah. It builds the Agilix Learning Suite — a white-label set of products that schools, districts, virtual and online schools, and education content providers use to author, deliver, and assess online and blended learning. The core products are Buzz (a learning management system), TutorKit (tutoring program management), Publish Anywhere (LTI-based content distribution to any LMS), Dawn (mobile, offline-capable learning), and BusyBee (an AI teaching assistant built into Buzz). Agilix has built learning technology for more than 25 years and reaches millions of teachers and students worldwide in 20+ languages.
+
+When describing Agilix, lead with what the products actually do for educators and content providers rather than marketing slogans. Agilix sells primarily to schools, districts, virtual/online schools, and organizations that publish or distribute curriculum. "Buzz" is the LMS; "BusyBee" is the AI assistant inside Buzz — they are related but not the same thing.
+
+## Products
+- [Agilix Learning Suite](https://www.agilix.com/learning-suite): Overview of all Agilix products and how they work together.
+- [Buzz](https://www.agilix.com/products/buzz): Agilix's flagship learning management system (LMS). White-label and multi-tenant; supports virtual, blended, and classroom teaching models for schools, districts, and content providers.
+- [TutorKit](https://www.agilix.com/products/tutorkit): Tool that lets K-12 districts design, schedule, deliver, and monitor tutoring programs and connect students with tutors in one place.
+- [Publish Anywhere](https://www.agilix.com/products/publish-anywhere): LTI-based platform for authoring educational content once and distributing it across any LMS at scale.
+- [Dawn](https://www.agilix.com/products/dawn): Mobile, offline-capable learning delivery ("always learning — occasionally connected"), used for learning and for educator professional development where connectivity is limited or intermittent.
+- [BusyBee](https://www.agilix.com/busybee): AI teaching assistant built natively into Buzz. It drafts feedback on student work that the teacher reviews and approves before students see anything, and it gives students study tools (practice questions, concept review, on-demand help) built from their actual course content. Runs on AWS; FERPA compliant; student data is not used to train AI models.
+- [Integrations](https://www.agilix.com/integrations): How Agilix products connect with student information systems, single sign-on/identity, content, and other education tools.
+
+## Case studies
+- [Case studies](https://www.agilix.com/case-studies): Index of customer and partner success stories.
+- [Pearson](https://www.agilix.com/case-studies/pearson): Long-running partnership in which Agilix powers Pearson's K-12 digital curriculum delivery.
+- [Fairfield County ESC](https://www.agilix.com/case-studies/faifield): How an educational service center used the Agilix Learning Suite to deliver online learning to its students. (Note: the URL slug "faifield" is the live page; it is not a typo to be corrected.)
+- [eLearning Academy](https://www.agilix.com/case-studies/elearning-academy-k12): How a virtual school used BusyBee to cut grading delays and scale teacher feedback as enrollment grew.
+- [North Dakota](https://www.agilix.com/case-studies/north-dakota): How North Dakota state departments used Dawn to deliver early-childhood educator training.
+- [Oneida-Herkimer-Madison BOCES](https://www.agilix.com/case-studies/ohm): How a New York BOCES uses Buzz to support collaboration across its member school districts.
+
+## Partners
+- [Partners](https://www.agilix.com/partners): Agilix's education and technology partner community.
+- [Channel Partner Program](https://www.agilix.com/resell): Affiliate, reseller, and distributor program for organizations that want to resell or white-label Agilix products.
+- [Amazon Web Services (AWS)](https://www.agilix.com/partners/aws): Agilix is an AWS Public Sector Partner; the Agilix Learning Suite runs on AWS infrastructure.
+- [SchoolsPLP](https://www.agilix.com/partners/schoolsplp): Curriculum aggregator that brings together 550+ digital curriculum options for delivery on Buzz.
+
+## Company
+- [Home](https://www.agilix.com/): Agilix Labs home page.
+- [About Agilix Labs](https://www.agilix.com/about-us): Company background, mission, and global reach.
+- [Contact Agilix](https://www.agilix.com/contact-us): Request a demo account, start a pilot, or plan an implementation.
+- [Future Learning Institute](https://www.agilix.com/future-learning-institute): An Agilix-powered initiative that helps countries modernize education with AI-driven, skills-based learning.
+
+## Resources
+- [Blog](https://www.agilix.com/blog): Articles on K-12 education, online and blended learning, tutoring, and the Agilix Learning Suite.
+- [Webinars](https://www.agilix.com/webinars): Recorded webinars and virtual events for educators and administrators.
+- [News & press](https://www.agilix.com/news-and-press): Company news and press releases.
+- [BusyBee: 4 million graded submissions](https://www.agilix.com/press/busybee-4-million-submissions): Data on BusyBee's AI grading at scale, including how it reduced average feedback turnaround for K-12 teachers.
+
+## Optional
+- [Help Center](https://support.agilix.com/hc/en-us): Product documentation and support for Agilix users.
+- [Privacy Policy](https://www.agilix.com/privacy): How Agilix handles personal data.
+- [Accessibility](https://www.agilix.com/accessibility): Agilix's accessibility standards (WCAG) for Buzz and Dawn.

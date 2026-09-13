@@ -1,0 +1,41 @@
+generated: '2026-09-12'
+method: searched
+source: https://www.agilix.com/contact-us
+name: Agilix Labs pricing and plans
+description: >-
+  Agilix publishes no pricing. There is no /pricing page on www.agilix.com — the URL 404s and
+  the sitemap contains no pricing, plans or packages page at all. Every commercial path on the
+  site funnels to a contact form: "Request a demo account, start a pilot, or plan an
+  implementation." Buzz, TutorKit, Publish Anywhere and Dawn are sold to schools, districts,
+  virtual schools, content publishers and channel partners under negotiated licences, and the
+  licence itself is modelled inside the API (SystemLicense, GetSystemLicenseCounters,
+  License Limit) rather than sold from a page. API access is not separately priced or metered
+  publicly; it comes with a provisioned Buzz domain.
+plan_count: 0
+pricing_page: null
+pricing_page_probe:
+  url: https://www.agilix.com/pricing
+  status: 404
+  checked: '2026-09-12'
+model: enterprise / contact sales
+currency: null
+plans: []
+commercial_paths:
+- name: Direct
+  url: https://www.agilix.com/contact-us
+  note: Demo account, pilot, or implementation plan.
+- name: Channel Partner Program
+  url: https://www.agilix.com/resell
+  note: Affiliate, reseller and distributor program for organizations reselling or white-labeling Agilix products.
+licensing_in_api:
+  note: >-
+    Licence entitlement is a first-class API object — PutSystemLicense, GetSystemLicense,
+    GetSystemLicenseCounters, and the License Limit schema, which "specifies the limit of
+    resources an organization can consume". Login fails with NoLicense, LicenseExpired,
+    LicenseNotYetValid or LicenseLimitExceeded when entitlement is absent or exhausted. The
+    commercial terms behind those limits are not published.
+api_metering:
+  note: >-
+    API usage is governed by per-customer processing-time budgets rather than a priced quota
+    (see rate-limits/agilix-rate-limits.yml). Customers "may contact support to increase the
+    account's provisioned rate limits"; no price is attached.

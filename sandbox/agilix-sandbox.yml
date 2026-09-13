@@ -1,0 +1,87 @@
+generated: '2026-09-12'
+method: probed
+source: https://api.agilixbuzz.com/docs/entry/Concept/ApiTimeLimiting.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/ApiTimeLimiting.md
+- https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+- https://api.agilixbuzz.com/docs/entry/Concept/SampleCode.md
+name: Agilix Buzz API test and console surface
+description: >-
+  Buzz has no self-serve sandbox tenant and publishes no test credentials — a domain is
+  provisioned by Agilix, and access to the API means access to a real customer domain. What
+  it does publish is two things most providers do not: a dedicated failure-injection endpoint
+  whose entire purpose is to make your retry code fire, and an interactive API console inside
+  the documentation. Both are named here because they are the real testing affordances; none
+  of the usual sandbox furniture (test keys, test cards, fixtures, time travel) exists,
+  and none is invented here.
+self_serve_sandbox: false
+test_credentials_published: false
+test_endpoints:
+- host: backoff-testapi.agilixbuzz.com
+  purpose: >-
+    Failure-injection endpoint. "Randomly throttles so developers can easily test to ensure
+    their exponential backoff code functions correctly." Test requests are limited randomly
+    and frequently regardless of system load.
+  behaviour: returns 429 with Retry-After unpredictably
+  auth: same as production (OAuth Bearer token)
+  data: real — this is a throttling harness, not an isolated data sandbox
+  probed:
+    url: 'https://backoff-testapi.agilixbuzz.com/cmd?cmd=getstatus'
+    status: 200
+    date: '2026-09-12'
+    note: Answers the anonymous GetStatus command exactly as the production endpoints do.
+- host: interactiveapi.agilixbuzz.com
+  purpose: production endpoint for user-interactive workloads
+  probed:
+    url: 'https://interactiveapi.agilixbuzz.com/cmd?cmd=getstatus'
+    status: 200
+    date: '2026-09-12'
+- host: backgroundapi.agilixbuzz.com
+  purpose: production endpoint for background/batch workloads
+  probed:
+    url: 'https://backgroundapi.agilixbuzz.com/cmd?cmd=getstatus'
+    status: 200
+    date: '2026-09-12'
+console:
+  name: API Console
+  url: https://api.agilixbuzz.com/docs/
+  note: >-
+    An interactive console is documented as part of the reference site for trying commands
+    by hand ("For interactive testing, you can use the API Console"), and the 2026-08-06
+    release notes carry an API Console entry. The provider warns that the debugging pages
+    are not a stable interface — "Do NOT use these debugging pages in your programs, as we
+    may replace them at any time" — and that code should always call cmd. The console is
+    reached through the JavaScript documentation shell; the direct entry path
+    /docs/entry/apiconsole.md returned 404 to a raw fetch.
+  direct_path_probe:
+    url: https://api.agilixbuzz.com/docs/entry/apiconsole.md
+    status: 404
+anonymous_commands:
+- command: GetStatus
+  auth: none
+  note: >-
+    Callable with no credentials on all three endpoint hosts; returns build version,
+    dlapversion, health status and rating. The safest way to verify connectivity and TLS
+    before wiring credentials.
+- command: VerifyUserEmail
+  auth: none
+  note: Rate limited by calling IP address.
+- command: RedeemCommandToken
+  auth: none when scopedomainid is supplied
+  note: Rate limited to thwart brute-force token guessing and expensive-token overload.
+fixtures:
+  test_keys: null
+  test_cards: null
+  time_simulation: null
+  triggers: null
+  note: >-
+    None published. The nearest equivalents are CreateDemoCourse, which builds a demonstration
+    course from a source course, and the setup scripts shipped with each sample repository,
+    which generate an RSA key pair, create an Application Identity account and register the
+    public key so a developer reaches a working end-to-end call before writing code. Those
+    scripts operate against a real domain, not a sandbox.
+onboarding:
+  note: >-
+    Access is sales-led — https://www.agilix.com/contact-us invites a demo account, pilot or
+    implementation plan. There is no public self-service signup for a Buzz domain or API
+    credential.

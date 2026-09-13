@@ -1,0 +1,118 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/DocumentHistory.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/DocumentHistory.md
+- https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+name: Agilix Buzz (DLAP / xLi) API lifecycle
+description: >-
+  Buzz ships weekly and the DLAP API carries an explicit additive-compatibility promise: new
+  releases are backwards compatible, and a command that is superseded is moved to an
+  Obsolete Commands list rather than removed. Breaking evolution is expressed by minting a
+  numbered successor (CreateUsers -> CreateUsers2, GetEnrollment2 -> GetEnrollment3, Login2
+  -> Login3, GetWorkInProgress -> GetWorkInProgress2) while the predecessor keeps working as
+  documented. Twenty-one commands currently sit on the obsolete list.
+versioning:
+  scheme: additive; numbered successor commands
+  in_url: false
+  dlap_version: '2'
+  current_build: 2026.9.9.3714
+  build_endpoint: 'https://backgroundapi.agilixbuzz.com/cmd?cmd=getstatus'
+  policy_statement: >-
+    "New releases of the DLAP API are backwards compatible with previous releases. New
+    commands or features may cause existing ones to become obsolete, but the existing ones
+    continue to work as documented."
+release_cadence: weekly
+deprecation:
+  policy_published: true
+  policy_url: https://api.agilixbuzz.com/docs/entry/Concept/DocumentHistory.md
+  mechanism: >-
+    Superseded commands are listed under "Obsolete Commands" in the API reference and each
+    obsolete command's own page names its replacement. The compatibility promise is that an
+    obsolete command keeps working as documented — the provider publishes no sunset date for
+    any of them.
+  sunset_header: false
+  deprecation_header: false
+  rfc_8594: false
+  sunset_dates_published: false
+  note: >-
+    This is a real, stated deprecation posture — "obsolete but supported indefinitely" — and
+    it is the opposite failure mode from an unannounced removal. What is absent is any
+    machine-readable signal: no Deprecation or Sunset response header, no deprecated flag in
+    a contract (there is no OpenAPI), so a client only learns a command is obsolete by
+    reading the documentation.
+  obsolete_commands:
+  - command: CreateUsers
+    replacement: CreateUsers2
+  - command: DeleteMessages
+    replacement: DeleteMessage
+  - command: GenerateAttempt
+  - command: GenerateSubmission
+  - command: GetCookie
+    note: Cookie-based authentication tokens deprecated for cross-site scripting reasons.
+  - command: GetCourse
+    replacement: GetCourse2
+  - command: GetDomain
+    replacement: GetDomain2
+  - command: GetEnrollment2
+    replacement: GetEnrollment3
+  - command: GetEnrollmentGradebook
+    replacement: GetEnrollmentGradebook2
+  - command: GetEntityEnrollmentList
+    replacement: GetEntityEnrollmentList2
+  - command: GetEntityEnrollmentList2
+  - command: GetLoginActivity
+  - command: GetQuestionList
+  - command: GetRecord
+  - command: GetResourceList
+  - command: GetUser
+    replacement: GetUser2
+  - command: GetUserEnrollmentList2
+  - command: GetUserList
+  - command: GetWorkInProgress
+    replacement: GetWorkInProgress2
+  - command: Login2
+    replacement: Login3 for interactive sign-in; OAuth 2.0 Application Identity for API integrations
+  - command: PutItemStatus
+  deprecated_parameters:
+  - item: PutKey query-string parameters
+    announced: '2026-09-10'
+    replacement: POST with an XML or JSON body
+    removal_date: null
+status_page:
+  dedicated_status_page: false
+  note: >-
+    No status.agilix.com or status.agilixbuzz.com incident page exists — status.agilixbuzz.com
+    resolves to the Buzz application shell itself, not a status site. Agilix publishes service
+    interruption and maintenance notices through the Support Announcements section of its
+    Zendesk help centre instead, which is a real channel but not a machine-readable status
+    surface and not a status page in the sense the rating means. No StatusPage pointer is
+    emitted for this provider.
+  announcement_channel: https://support.agilix.com/hc/en-us/sections/201379043-Support-Announcements
+  announcement_channel_status: 403
+  announcement_channel_note: >-
+    Zendesk answered our probe with a bot challenge (403), not a 404 — the section exists and
+    is reachable in a browser.
+  health_endpoint:
+    command: GetStatus
+    url: 'https://backgroundapi.agilixbuzz.com/cmd?cmd=getstatus'
+    auth: none
+    observed_status: 200
+    observed: '2026-09-12'
+    note: >-
+      Anonymous, unauthenticated health command available on all three endpoint hosts. Returns
+      build version, dlapversion, a per-unit status and a numeric health rating
+      (rating="4" ratingtext="Ideal" at the time of probe). This is the closest thing Buzz has
+      to a public status signal and it is genuinely machine-readable.
+sla:
+  published: false
+  note: >-
+    No public SLA. Availability and disaster-recovery commitments are described qualitatively
+    on https://www.agilix.com/security (annual recovery testing, multi-location replication)
+    and in the Shared Security Responsibility topic; numeric uptime targets are not published.
+support:
+  channels:
+  - https://support.agilix.com/hc/en-us
+  - mailto:support@agilix.com
+  - https://www.agilix.com/contact-us
+  api_community_forum: https://support.agilix.com/hc/en-us/community/topics/200323405-Buzz-API

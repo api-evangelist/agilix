@@ -1,0 +1,210 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+- https://api.agilixbuzz.com/docs/entry/Concept/HttpResponseStatusCodes.md
+- https://api.agilixbuzz.com/docs/entry/Concept/ApiRateLimiting.md
+- https://api.agilixbuzz.com/docs/entry/Concept/ApiTimeLimiting.md
+- https://api.agilixbuzz.com/docs/entry/Concept/EntityIds.md
+name: Agilix Buzz (DLAP / xLi) API conventions
+description: >-
+  Cross-cutting runtime semantics for the Buzz API. Buzz is not a resource-path REST API:
+  every one of the 291 documented operations is a named command issued as
+  POST/GET {endpoint}/cmd?cmd=<commandname>, with a JSON (or XML) envelope in and a JSON (or
+  XML) envelope out. The provider states it hopes to "slowly modernize the system to be more
+  REST-compliant" and advises using GET for reads and POST for writes so callers are less
+  likely to have to change code later.
+transport:
+  style: command-over-HTTP (DLAP)
+  request: 'POST https://{endpoint}/cmd?cmd=<commandname>'
+  read_commands_accept_get: true
+  content_types:
+  - application/json
+  - text/xml
+  request_envelope_single: '{"request": { ... }}'
+  request_envelope_batch: '{"requests": {"<entity>": [ ... ]}}'
+  response_envelope: '{"response": {"code": "OK", ...}}'
+  batch_response_envelope: '{"response": {"code": "OK", "responses": {"response": [ {"code": "..."} ]}}}'
+  endpoints:
+  - host: interactiveapi.agilixbuzz.com
+    use: user-interactive requests where a person is waiting
+  - host: backgroundapi.agilixbuzz.com
+    use: background processing, reports, synchronization
+  - host: backoff-testapi.agilixbuzz.com
+    use: test endpoint that throttles randomly so clients can exercise backoff code
+auth:
+  style: OAuth 2.0 JWT client-credentials Bearer token
+  see: authentication/agilix-authentication.yml
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  header: null
+  note: >-
+    The Buzz API documents no replay-protection mechanism. There is no Idempotency-Key
+    header, no client-supplied request id that de-duplicates a retried write, and no
+    documented at-most-once guarantee on any mutating command. The provider's own retry
+    guidance is explicitly about which HTTP status codes are safe to retry, not about
+    whether a retried write can be applied twice, and it warns that a pipelined response
+    can be interrupted mid-stream and left unparseable — which is exactly the case where a
+    caller cannot tell whether a write landed. Batch commands return a per-entity response
+    array so a caller can see which members of a batch succeeded, which limits but does not
+    remove the exposure. An agent replaying a failed PutItems, CreateEnrollments or
+    PutStudentSubmission has no server-side protection against a duplicate.
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+reversibility:
+  grade: documented
+  note: >-
+    Buzz implements delete as a soft delete with a matching restore command across most of
+    the entity model, and the data stream emits a distinct *EntityRestored / *ItemRestored /
+    *ResourceRestored event when it happens — so a deletion made by an agent really can be
+    taken back. What the documentation does NOT state anywhere is a retention window: no
+    command page, and no concept page, says how long a deleted course, user, enrollment,
+    item, resource, question, message, wiki page or role remains restorable. That missing
+    sentence is the only thing between this API and a `verified` grade, and it is the
+    sentence an agent needs before it deletes anything. No window is asserted here because
+    the provider does not publish one.
+  write_surfaces:
+  - operation: DeleteCourses
+    reversal: RestoreCourse
+    window: null
+    event: CourseEntityRestored
+    docs: https://api.agilixbuzz.com/docs/entry/Command/RestoreCourse.md
+    note: Deleting a course also deletes all related sections and enrollments.
+  - operation: DeleteUsers
+    reversal: RestoreUser
+    window: null
+    event: UserEntityRestored
+    docs: https://api.agilixbuzz.com/docs/entry/Command/RestoreUser.md
+  - operation: DeleteEnrollments
+    reversal: RestoreEnrollment
+    window: null
+    event: EnrollmentEntityRestored
+  - operation: DeleteDomain
+    reversal: RestoreDomain
+    window: null
+    event: DomainEntityRestored
+  - operation: DeleteItems
+    reversal: RestoreItems
+    window: null
+    event: CourseItemRestored / EnrollmentItemRestored / GroupItemRestored
+  - operation: DeleteResources
+    reversal: RestoreResources
+    window: null
+    event: CourseResourceRestored
+  - operation: DeleteQuestions
+    reversal: RestoreQuestions
+    window: null
+  - operation: DeleteAnnouncements
+    reversal: RestoreAnnouncements
+    window: null
+  - operation: DeleteDocuments
+    reversal: RestoreDocuments
+    window: null
+  - operation: DeleteMessages
+    reversal: RestoreMessages
+    window: null
+    event: InboxMessageRestored
+  - operation: DeleteObjectiveSets
+    reversal: RestoreObjectiveSet
+    window: null
+  - operation: DeleteRole
+    reversal: RestoreRole
+    window: null
+  - operation: DeleteWikiPages
+    reversal: RestoreWikiPages
+    window: null
+  no_reversal:
+  - operation: DeleteGroups
+    note: No RestoreGroups command is documented.
+  - operation: DeleteSubscriptions
+  - operation: DeleteWorkInProgress
+  - operation: DeleteCommandTokens
+dry_run_mode:
+  supported: false
+  note: >-
+    No documented preview/validate/dry-run flag on any mutating command. The closest thing
+    is CheckPasswordQuality, which evaluates a password against the effective policy without
+    setting it, and CalculateEnrollmentScenario, which computes a hypothetical grade outcome
+    without writing grades — both are purpose-built read operations, not a general rehearsal
+    mode.
+pagination:
+  style: command-specific query parameters
+  note: >-
+    There is no single catalogue-wide pagination contract. Listing commands (ListCourses,
+    ListUsers, ListEnrollments, GetQuestionList, ...) take their own filter/limit parameters
+    documented on each command page, and several stream their response rather than buffering
+    it. Callers are warned that a streamed response can be truncated mid-flight if an error
+    occurs, so a partial list is distinguishable from an empty one only by parse failure.
+  cursor: false
+filtering:
+  free_form_data_query: true
+  note: >-
+    Several list commands accept a Free-Form Data Query over the entity's XML data element
+    (e.g. GetQuestionList), addressing attributes as if they were elements ('/partial').
+  data_stream_filter: >-
+    SetDataStreamConfiguration takes a filter property that selects both which event types
+    and which properties are delivered; an overflow filter carrying only object id and
+    version numbers is substituted when a record exceeds the target's size limit.
+versioning:
+  scheme: additive, backwards-compatible; superseded commands get a numeric suffix
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/DocumentHistory.md
+  statement: >-
+    "New releases of the DLAP API are backwards compatible with previous releases. New
+    commands or features may cause existing ones to become obsolete, but the existing ones
+    continue to work as documented."
+  in_url: false
+  dlap_version: '2'
+  note: >-
+    Breaking changes are shipped as a new numbered command (CreateUsers -> CreateUsers2,
+    GetEnrollment2 -> GetEnrollment3, Login2 -> Login3) with the predecessor moved to the
+    Obsolete Commands list rather than removed. The running build version and dlapversion
+    are readable anonymously from GetStatus.
+error_envelope:
+  format: proprietary (not RFC 9457)
+  shape: '{"response": {"code": "<Code>", "message": "<string>", "body": { ... }}}'
+  http_status_note: >-
+    Most commands return HTTP 200 even on a logical failure and carry the outcome in
+    response.code; callers must check BOTH the HTTP status and the envelope code. Commands
+    called directly by the browser return conventional HTTP status codes instead.
+  warnings: >-
+    A successful response can carry a "warning" attribute (e.g.
+    PasswordPolicyRequirementsNotMet, SecondFactorRequired). Only one warning is returned
+    per response.
+  message_stability: >-
+    The provider warns against parsing the message string — "these strings can change at any
+    time".
+  see: errors/agilix-error-codes.yml
+rate_limit_signal:
+  headers:
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - Retry-After
+  exhaustion_status: 429
+  note: >-
+    Two distinct mechanisms share the 429 status and the Retry-After header — per-endpoint
+    rate limiting and per-customer time limiting — and the provider says the other response
+    headers are what tell them apart.
+  see: rate-limits/agilix-rate-limits.yml
+tracing:
+  request_id_header: null
+  error_id: >-
+    Error responses carry an errorId attribute (observed on a live BadRequest response from
+    backgroundapi.agilixbuzz.com), which is the identifier to quote to support.
+  client_identification:
+    header: User-Agent
+    required: true
+    note: >-
+      The provider requires a User-Agent that uniquely identifies the calling system and
+      usually carries a version number, and states that impersonating an Agilix end-user
+      application such as Buzz in the User-Agent "will result in immediate account
+      suspension". Sample code ships a placeholder that must be replaced before deployment.
+identifiers:
+  see: https://api.agilixbuzz.com/docs/entry/Concept/EntityIds.md
+  note: >-
+    Entities carry both a Buzz id and an external "reference" id, so an SIS key can be used
+    in place of a Buzz id; domain paths use a '//' prefix (e.g. "//myschool").
+events:
+  see: asyncapi/agilix-datastream-webhooks.yml

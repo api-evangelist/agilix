@@ -64,5 +64,10 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Agilix is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+Agilix Labs, Inc. is a K-12 education technology company in Orem, Utah that builds the Agilix Learning Suite — a white-label, multi-tenant set of products schools, districts, virtual and online schools and curriculum publishers use to author, deliver and assess online and blended learning: Buzz (the LMS), TutorKit, Publish Anywhere, Dawn and BusyBee (an AI teaching assistant).
+
+Its public developer surface is the **Buzz API**, also called DLAP or xLi — a command-style HTTP API with 291 documented commands, a Data Stream event feed of roughly 70 event types with HTTPS webhook / Kinesis / SQS / email delivery, OAuth 2.0 JWT client-credentials authentication, weekly dated release notes, an `llms.txt` on both the corporate and API hosts, and seven first-party sample client libraries on GitHub. Buzz is a 1EdTech LTI 1.3 / LTI Advantage platform and exchanges SCORM run-time data. No OpenAPI, MCP server or agent card is published.
+
+- Company: https://www.agilix.com/
+- API documentation: https://api.agilixbuzz.com/docs/
+- GitHub: https://github.com/AgilixLabs

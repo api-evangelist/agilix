@@ -1,0 +1,222 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/BuzzApiDataModel.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/BuzzApiDataModel.md
+- https://api.agilixbuzz.com/docs/entry/Concept/EntityIds.md
+name: Agilix Buzz API data model
+description: >-
+  Entity-relationship graph for the Buzz API, transcribed from the provider's own published
+  data-model chart rather than derived from a spec — there is no OpenAPI to derive $ref links
+  from. Buzz organizes its objects into six families: School Objects, Static Course Content,
+  Dynamic Course Objects, Student Content, Learning Objective Objects and Other Objects. The
+  spine is Domain -> Course -> Enrollment: a domain owns everything, a course holds content,
+  and an enrollment binds a user to a course for a period with a rights mask. Everything a
+  student produces hangs off the enrollment, not the user, which is why a learner who retakes
+  a course gets a second enrollment rather than overwritten work.
+identifiers:
+  primary: Buzz entity id (numeric string)
+  external: >-
+    Most entities carry a "reference" field holding the id from an external system (typically
+    an SIS), and commands accept it in place of the Buzz id.
+  domain_path: 'Domains can be addressed by path with a // prefix, e.g. "//myschool".'
+  composite: >-
+    An item merged with a group override carries a composite actualentityid of
+    "{courseId}:{groupId}" so a client can tell an override is in effect.
+  see: https://api.agilixbuzz.com/docs/entry/Concept/EntityIds.md
+entities:
+- name: Domain
+  family: school
+  description: >-
+    Root-most owner of every other object. Typically an institution (district, school) but can
+    act as a course repository. Domains nest; rights in a parent apply to all descendants.
+  commands: [CreateDomains, GetDomain2, UpdateDomains, DeleteDomain, RestoreDomain]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Domain.md
+  relationships:
+  - has_many: Domain
+    via: parent domain
+  - has_many: User
+  - has_many: Course
+  - has_many: Enrollment
+  - has_many: Announcement
+- name: User
+  family: school
+  description: A person's account in a domain. Also the shape of an Application Identity (machine) account.
+  commands: [CreateUsers2, GetUser2, UpdateUsers, DeleteUsers, RestoreUser, ListUsers]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/User.md
+  relationships:
+  - belongs_to: Domain
+    via: domainid
+  - has_many: Enrollment
+  - has_many: Right
+- name: Right
+  family: school
+  description: A permission a user holds on an entity; domain rights cascade to descendant domains.
+  commands: [UpdateRights, GetRights]
+  enum: https://api.agilixbuzz.com/docs/entry/Enum/RightsFlags.md
+  relationships:
+  - belongs_to: User
+  - belongs_to: Domain
+- name: Course
+  family: school
+  description: >-
+    Container for learning material. A course can derive from a master course so edits flow to
+    derivatives. Grading rules, objectives, categories and course variables live in its data XML.
+  commands: [CreateCourses, CopyCourses, GetCourse2, UpdateCourses, DeleteCourses, RestoreCourse, ListCourses]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Course.md
+  relationships:
+  - belongs_to: Domain
+  - has_one: Course
+    via: base/ancestor course (derivation)
+  - has_many: Item
+  - has_many: Resource
+  - has_many: Enrollment
+  - has_many: Group
+- name: Enrollment
+  family: school
+  description: >-
+    Binds a user to a course for a period with a course rights mask (student, teacher, TA).
+    All student work and grades bind here, not to the user.
+  commands: [CreateEnrollments, GetEnrollment3, UpdateEnrollments, DeleteEnrollments, RestoreEnrollment, ListEnrollments]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Enrollment.md
+  relationships:
+  - belongs_to: User
+    via: userid
+  - belongs_to: Course
+    via: entityid
+  - has_many: Submission
+  - has_many: Grade
+  - has_one: EnrollmentMetrics
+- name: Resource
+  family: static-course-content
+  description: Raw content files — HTML, PDF, images, video.
+  commands: [PutResource, GetResource, DeleteResources, RestoreResources, CopyResources]
+  relationships:
+  - belongs_to: Course
+- name: Item
+  family: static-course-content
+  description: >-
+    Learning objects users interact with — assessments, assignments, journals, discussion
+    forums. May reference one or more resources.
+  commands: [PutItems, GetItem, GetManifest, GetManifestItem, GetItemList, DeleteItems, RestoreItems, CopyItems]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/ItemData.md
+  relationships:
+  - belongs_to: Course
+  - has_many: Question
+  - has_many: Resource
+- name: Question
+  family: static-course-content
+  description: A quiz or exam question with answers, feedback and distractors.
+  commands: [PutQuestions, GetQuestion, DeleteQuestions, RestoreQuestions, GetQuestionList]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Question.md
+  relationships:
+  - belongs_to: Item
+- name: Group
+  family: dynamic-course
+  description: >-
+    A partition of enrollments within a course, used for group assignments, group-visible
+    discussion, and per-group grading criteria. On Schema 4+ courses groups live in course
+    data rather than as entities.
+  commands: [CreateGroups, AddGroupMembers, GetGroup, UpdateGroups, DeleteGroups, GetGroupList]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Group.md
+  relationships:
+  - belongs_to: Course
+  - has_many: Enrollment
+    via: membership
+- name: Announcement
+  family: dynamic-course
+  description: An announcement to domain users or to users enrolled in a course.
+  commands: [PutAnnouncement, GetAnnouncement, DeleteAnnouncements, RestoreAnnouncements]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Announcement.md
+  relationships:
+  - belongs_to: Domain
+  - belongs_to: Course
+- name: Blog/Journal Message
+  family: dynamic-course
+  commands: [PutBlog, GetBlog, DeleteBlogs]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Message.md
+  relationships:
+  - belongs_to: Item
+  - has_many: Blog/Journal Message
+    via: in-reply-to
+- name: Forum Message
+  family: dynamic-course
+  commands: [PutMessage, GetMessage, DeleteMessage, RestoreMessages]
+  relationships:
+  - belongs_to: Item
+  - has_many: Forum Message
+    via: in-reply-to
+- name: Wiki Page
+  family: dynamic-course
+  commands: [PutWikiPage, GetWikiPage, DeleteWikiPages, RestoreWikiPages, CopyWikiPages]
+  relationships:
+  - belongs_to: Item
+- name: Submission
+  family: student-content
+  description: A student's submission for an assignment or exam. Recursive — a submission can contain submissions.
+  commands: [PutStudentSubmission, GetStudentSubmission]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Submission.md
+  relationships:
+  - belongs_to: Enrollment
+  - belongs_to: Item
+  - has_many: Attempt Question
+- name: Response
+  family: student-content
+  description: >-
+    A teacher's (or peer reviewer's) response to a submission. Recursive, same as Submission.
+  commands: [PutTeacherResponse, GetTeacherResponse]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Response.md
+  relationships:
+  - belongs_to: Submission
+- name: Grade
+  family: student-content
+  commands: [GetGrade, GetEnrollmentGradebook2, GetEntityGradebook3, GetUserGradebook2]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Grade.md
+  relationships:
+  - belongs_to: Enrollment
+  - belongs_to: Item
+- name: ObjectiveSet
+  family: learning-objectives
+  commands: [CreateObjectiveSets, GetObjectiveSet2, ListObjectiveSets, DeleteObjectiveSets, RestoreObjectiveSet]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/ObjectiveSet.md
+  relationships:
+  - has_many: Objective
+- name: Objective
+  family: learning-objectives
+  commands: [DeleteObjectives, DeleteObjectiveMaps]
+  relationships:
+  - belongs_to: ObjectiveSet
+  - has_many: Item
+    via: objective map
+- name: Role
+  family: other
+  commands: [CreateRole, GetRole, ListRoles, DeleteRole, RestoreRole]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Role.md
+  relationships:
+  - belongs_to: Domain
+- name: SystemLicense
+  family: other
+  commands: [PutSystemLicense, GetSystemLicense, GetSystemLicenseCounters]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/SystemLicense.md
+  relationships:
+  - belongs_to: Domain
+  - has_many: License Limit
+  - has_many: License Contact
+- name: Rubric
+  family: other
+  description: XML stored as a course resource; items reference it from Item Data for grading or peer review.
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Rubric.md
+  relationships:
+  - belongs_to: Resource
+- name: Session
+  family: other
+  commands: [ExtendSession, GetUser2, ListUsers]
+  schema: https://api.agilixbuzz.com/docs/entry/Schema/Session.md
+  relationships:
+  - belongs_to: User
+counts:
+  entities: 22
+  documented_commands: 291
+  documented_schemas: 36
+  documented_enums: 37
+  source: https://api.agilixbuzz.com/sitemap.xml

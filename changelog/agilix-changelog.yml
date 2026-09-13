@@ -1,0 +1,89 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/DocumentHistory.md
+name: Agilix Buzz (DLAP) API release notes
+description: >-
+  Agilix publishes dated release notes for the DLAP / Buzz Web Services API as a single
+  reference page inside the API documentation, grouped by release date and by functional
+  area. Buzz releases weekly. Entries from May 2023 onward — when release notes began being
+  published for every release — are grouped by release date; earlier entries are grouped by
+  month because release dates before then were not published. The page is long-lived and
+  cumulative (roughly 164 KB), and a change appears under the first release on or after the
+  day it landed in the API.
+url: https://api.agilixbuzz.com/docs/entry/Concept/DocumentHistory.md
+html_url: https://api.agilixbuzz.com/docs/#!/Concept/DocumentHistory
+scheme: dated releases, weekly cadence
+cadence: weekly
+compatibility_policy: >-
+  "New releases of the DLAP API are backwards compatible with previous releases. New
+  commands or features may cause existing ones to become obsolete, but the existing ones
+  continue to work as documented."
+current_version:
+  build: 2026.9.9.3714
+  dlap_version: '2'
+  source: 'GET https://backgroundapi.agilixbuzz.com/cmd?cmd=getstatus (anonymous, HTTP 200, 2026-09-12)'
+entries:
+- date: '2026-09-10'
+  areas: [Vault, Rights, Password Policies, Authentication, Assessments]
+  breaking: false
+  highlights:
+  - PutKey now reads its parameters from an XML or JSON request body and a POST body is the
+    documented way to call it; query-string parameters still work but are deprecated and may
+    be rejected in a future release, because the value stored is often a credential and
+    query strings land in access, proxy and browser logs.
+  - GetRole and ListRoles now resolve "the caller's domain" from the user the session is
+    acting as rather than from the token, fixing proxied administrator sessions that were
+    refused the acting user's own roles.
+  - CheckPasswordQuality, SAML single-logout redirects and custom-question previews were
+    corrected the same way, all of which had read the proxying account's domain from the token.
+- date: '2026-09-03'
+  areas: [Data Streams, Courses, Groups, Schemas]
+  breaking: false
+  highlights:
+  - Corrected which data stream events group changes actually send on Schema 4+ courses, and
+    documented the Schema 4 group event payloads publicly.
+  - CreateDemoCourse and UpdateCourses now refuse to move a course to schema 4 while it still
+    holds groups stored as entities, instead of silently leaving them unreachable.
+  - New "Group Inheritance" topic covering how groups, group sets and group-specific activity
+    settings inherit from a base course to its derivatives.
+- date: '2026-08-27'
+  areas: [Authentication, Data Streams, Documentation, Gradebook]
+  breaking: false
+- date: '2026-08-20'
+  areas: [Data Stream]
+  breaking: false
+- date: '2026-08-13'
+  areas: [Enrollments, Manifests and Items, Password Policies]
+  breaking: false
+- date: '2026-08-06'
+  areas: [API Console, Course Chaining, Data Streams, Documentation Site, Password Policies]
+  breaking: false
+- date: '2026-07-30'
+  areas: [API Client Design, API Time Limits, Data Streams, Destinations]
+  breaking: false
+  highlights:
+  - The API Client Design section and the seven-language sample client repositories landed
+    around this window; six of the seven AgilixLabs sample repos were created 2026-07-24 to
+    2026-07-29.
+- date: '2026-07-23'
+  breaking: false
+- date: '2026-07-15'
+  breaking: false
+- date: '2026-07-09'
+  breaking: false
+- date: '2026-07-07'
+  breaking: false
+- date: '2026-07-02'
+  breaking: false
+window:
+  note: >-
+    Recent window only — the published page runs back to 2007-era entries. Twelve releases
+    from 2026-07-02 to 2026-09-10 are recorded here; functional areas are transcribed from
+    the page for each, and highlights only for the three most recent, where the change text
+    was read in full.
+deprecations_in_window:
+- item: PutKey via query-string parameters
+  announced: '2026-09-10'
+  replacement: POST with an XML or JSON request body
+  removal_date: null
+  note: Provider says the query-string form "may be rejected in a future release"; no date given.

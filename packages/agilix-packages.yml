@@ -1,0 +1,130 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/SampleCode.md
+name: Agilix Buzz API client libraries and sample code
+description: >-
+  Agilix Labs publishes seven first-party Buzz API client libraries as GitHub repositories
+  under the AgilixLabs organization — one per language, each a runnable sample program plus
+  a reusable client library that implements the same reference client (OAuth 2.0 JWT client
+  credentials, exponential-backoff retries, Retry-After / X-RateLimit-Reset handling, and
+  JSON request/response helpers). None of the seven is published to a language package
+  registry: npm, PyPI, Packagist, Maven Central, NuGet and the PowerShell Gallery were all
+  checked and carry no Agilix/Buzz package, and none of the repositories carries a git tag
+  or a GitHub release. Distribution is source-only, at the tip of the default branch, so a
+  consumer cannot pin a version.
+registries_checked:
+- registry: npm
+  query: agilix, agilix-buzz, buzz-api, "@agilix/buzz"
+  result: not found
+- registry: PyPI
+  query: agilix, buzz-api
+  result: not found
+- registry: GitHub
+  org: AgilixLabs
+  result: 8 public repositories, 7 of them Buzz API clients
+packages:
+- name: BuzzApiSample-CSharp
+  language: C#
+  official: true
+  registry: github
+  url: https://github.com/AgilixLabs/BuzzApiSample-CSharp
+  license: MIT
+  version: null
+  published: null
+  last_commit: '2026-08-18'
+  created: '2022-06-10'
+  note: >-
+    No git tags and no GitHub releases; the repository is distributed at HEAD, so version is
+    honestly unknown to a consumer. Requires .NET 9; no third-party packages.
+- name: BuzzApiSample-Go
+  language: Go
+  official: true
+  registry: github
+  url: https://github.com/AgilixLabs/BuzzApiSample-Go
+  license: MIT
+  version: null
+  published: null
+  last_commit: '2026-08-18'
+  created: '2026-07-27'
+  note: >-
+    No tags/releases, and no module published to proxy.golang.org under this path. Go 1.22+,
+    standard library only.
+- name: BuzzApiSample-Java
+  language: Java
+  official: true
+  registry: github
+  url: https://github.com/AgilixLabs/BuzzApiSample-Java
+  license: MIT
+  version: null
+  published: null
+  last_commit: '2026-08-18'
+  created: '2026-07-24'
+  note: >-
+    No tags/releases; not on Maven Central. Java 8+, built with Maven; Gson is the only
+    runtime dependency.
+- name: BuzzApiSample-Node
+  language: TypeScript/JavaScript
+  official: true
+  registry: github
+  url: https://github.com/AgilixLabs/BuzzApiSample-Node
+  license: MIT
+  version: null
+  published: null
+  last_commit: '2026-08-18'
+  created: '2026-07-27'
+  note: >-
+    No tags/releases; registry.npmjs.org returns "Not found" for agilix, agilix-buzz,
+    buzz-api and @agilix/buzz. Node.js 22+; no runtime dependencies.
+- name: BuzzApiSample-PHP
+  language: PHP
+  official: true
+  registry: github
+  url: https://github.com/AgilixLabs/BuzzApiSample-PHP
+  license: MIT
+  version: null
+  published: null
+  last_commit: '2026-08-18'
+  created: '2026-07-24'
+  note: >-
+    No tags/releases; not on Packagist. PHP 7.4+ with bundled openssl, curl and json
+    extensions; no Composer dependencies.
+- name: BuzzApiSample-PowerShell
+  language: PowerShell
+  official: true
+  registry: github
+  url: https://github.com/AgilixLabs/BuzzApiSample-PowerShell
+  license: MIT
+  version: null
+  published: null
+  last_commit: '2026-08-18'
+  created: '2026-07-29'
+  note: >-
+    No tags/releases; not on the PowerShell Gallery. Windows PowerShell 5.1 or PowerShell
+    7+; built-in .NET types only.
+- name: BuzzApiSample-Python
+  language: Python
+  official: true
+  registry: github
+  url: https://github.com/AgilixLabs/BuzzApiSample-Python
+  license: MIT
+  version: null
+  published: null
+  last_commit: '2026-08-18'
+  created: '2026-07-24'
+  note: >-
+    No tags/releases; pypi.org/pypi/agilix/json and /buzz-api/json both 404. Python 3.8+;
+    depends on cryptography and requests.
+third_party:
+- name: StrongMind/agilix-buzz-client
+  language: Ruby
+  official: false
+  url: https://github.com/StrongMind/agilix-buzz-client
+  note: Community client from an Agilix partner (StrongMind); not published by Agilix Labs.
+currency:
+  note: >-
+    All seven first-party clients were last pushed on 2026-08-18, three weeks before this
+    check, and the Buzz API itself releases weekly (latest documented release 2026-09-10),
+    so the clients are actively maintained. The abandonment signal this field usually
+    carries is absent; the real finding is the missing one — no registry publication and no
+    version tags anywhere.
+  checked: '2026-09-12'

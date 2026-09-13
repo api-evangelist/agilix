@@ -1,23 +1,173 @@
 aid: agilix
 name: Agilix
-description: 'Agilix is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Agilix Labs, Inc. is a K-12 education technology company in Orem, Utah that builds the
+  Agilix Learning Suite — a white-label, multi-tenant set of products schools, districts,
+  virtual and online schools and curriculum publishers use to author, deliver and assess
+  online and blended learning. The suite is Buzz (the learning management system), TutorKit
+  (tutoring program management), Publish Anywhere (LTI-based content distribution to any
+  LMS), Dawn (mobile, offline-capable delivery) and BusyBee (an AI teaching assistant built
+  into Buzz). Agilix has built learning technology for more than 25 years and reaches
+  millions of teachers and students in 20+ languages across 200+ countries, running on AWS.
+  Its public developer surface is the Buzz API — also called DLAP or xLi — a command-style
+  HTTP API with 291 documented commands covering domains, users, courses, enrollments,
+  items, questions, submissions, gradebooks, objectives, rights and licensing, plus a
+  configurable Data Stream event feed with roughly 70 event types and five delivery targets
+  including HTTPS webhooks. Buzz is a 1EdTech LTI 1.3 / LTI Advantage platform and exchanges
+  SCORM run-time data. Authentication is OAuth 2.0 client credentials with a JWT client
+  assertion (RFC 6749 + RFC 7523) against an Application Identity account. Agilix publishes
+  an llms.txt for both its corporate site and its API documentation, an ai-plugin.json
+  manifest on two API hosts, weekly dated release notes, and seven first-party sample client
+  libraries on GitHub — but no OpenAPI, no MCP server and no agent card.
 url: https://raw.githubusercontent.com/api-evangelist/agilix/refs/heads/main/apis.yml
+image: https://cdn.prod.website-files.com/63e3df066454cf5d1a3762bf/63fcec436021ff40163c2ad8_logo.png
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-09-12'
 modified: '2026-09-12'
 tags:
 - Company
-apis: []
+- Education
+- EdTech
+- Learning Management System
+- K-12
+- Online Learning
+- Tutoring
+- Assessment
+- LTI
+- SCORM
+- Artificial Intelligence
+- Events
+apis:
+- aid: agilix:buzz-api
+  name: Agilix Buzz API (DLAP / xLi)
+  description: >-
+    The Buzz API is the programmable surface of the Agilix Learning Suite. It is a
+    command-style HTTP API rather than a path-and-method REST API: every one of its 291
+    documented operations is issued as POST or GET {endpoint}/cmd?cmd=<commandname> with a
+    JSON (or XML) envelope in and out, and errors are carried in response.code under an HTTP
+    200. It manages domains, users, rights, roles, courses, enrollments, groups, items,
+    resources, questions, submissions, teacher responses, gradebooks, objectives,
+    announcements, discussions, wikis, licensing and reporting, and exposes a Data Stream of
+    about 70 event types deliverable to HTTPS webhooks, Kinesis, Kinesis Firehose, SQS or
+    email. Three production endpoint hostnames split workloads by intent — interactive,
+    background and a deliberate failure-injection test host — each with its own
+    processing-time budget. Authentication is OAuth 2.0 client credentials with an RSA-signed
+    JWT client assertion; the legacy Login3 password flow is still supported but not
+    recommended for new integrations. No OpenAPI is published.
+  humanURL: https://api.agilixbuzz.com/docs/
+  baseURL: https://backgroundapi.agilixbuzz.com/cmd
+  image: https://cdn.prod.website-files.com/63e3df066454cf5d1a3762bf/63fcec436021ff40163c2ad8_logo.png
+  tags:
+  - Education
+  - Learning Management System
+  - K-12
+  - Courses
+  - Enrollments
+  - Assessment
+  - Gradebook
+  - LTI
+  - SCORM
+  - Events
+  - Webhooks
+  properties:
+  - type: Documentation
+    url: https://api.agilixbuzz.com/docs/entry/Concept/Overview.md
+  - type: APIReference
+    url: https://api.agilixbuzz.com/docs/all.md
+  - type: GettingStarted
+    url: https://api.agilixbuzz.com/docs/entry/Concept/Tutorial.md
+  - type: Authentication
+    url: authentication/agilix-authentication.yml
+  - type: Conventions
+    url: conventions/agilix-conventions.yml
+  - type: ErrorCatalog
+    url: errors/agilix-error-codes.yml
+  - type: RateLimits
+    url: rate-limits/agilix-rate-limits.yml
+  - type: Lifecycle
+    url: lifecycle/agilix-lifecycle.yml
+  - type: ChangeLog
+    url: changelog/agilix-changelog.yml
+  - type: DataModel
+    url: data-model/agilix-data-model.yml
+  - type: Webhooks
+    url: asyncapi/agilix-datastream-webhooks.yml
+  - type: Sandbox
+    url: sandbox/agilix-sandbox.yml
+  - type: Conformance
+    url: conformance/agilix-conformance.yml
+  - type: X-MCPServerCandidate
+    url: mcp/agilix-mcp.yml
+  - type: LLMsTxt
+    url: llms/agilix-buzz-api-llms.txt
+  - type: AgentSkill
+    url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: VulnerabilityDisclosure
+  url: security/agilix-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/agilix-domain-security.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://www.agilix.com/
+- type: DeveloperPortal
+  url: https://api.agilixbuzz.com/docs/
+- type: Documentation
+  url: https://api.agilixbuzz.com/docs/entry/Concept/Overview.md
+- type: APIReference
+  url: https://api.agilixbuzz.com/docs/all.md
+- type: GettingStarted
+  url: https://api.agilixbuzz.com/docs/entry/Concept/Tutorial.md
+- type: GitHubOrganization
+  url: https://github.com/AgilixLabs
+- type: SDKs
+  url: packages/agilix-packages.yml
+- type: Packages
+  url: packages/agilix-packages.yml
+- type: Support
+  url: https://support.agilix.com/hc/en-us
+- type: HelpCenter
+  url: https://support.agilix.com/hc/en-us
+- type: ContactUs
+  url: https://www.agilix.com/contact-us
+- type: Blog
+  url: https://www.agilix.com/blog
+- type: PrivacyPolicy
+  url: https://www.agilix.com/privacy
+- type: Plans
+  url: plans/agilix-plans-pricing.yml
+- type: Compliance
+  url: conformance/agilix-conformance.yml
+- type: Conformance
+  url: conformance/agilix-conformance.yml
+- type: WellKnown
+  url: well-known/agilix-well-known.yml
+- type: LLMsTxt
+  url: llms/agilix-llms.txt
+- type: Deprecation
+  url: lifecycle/agilix-lifecycle.yml
+- type: Accessibility
+  url: https://www.agilix.com/accessibility
+- type: Partners
+  url: https://www.agilix.com/partners
+- type: Integrations
+  url: https://www.agilix.com/integrations
+- type: News
+  url: https://www.agilix.com/news-and-press
+- type: TrustCenter
+  url: security/agilix-trust-center.yml
+- type: Security
+  url: security/agilix-vulnerability-disclosure.yml
+- type: Webhooks
+  url: asyncapi/agilix-datastream-webhooks.yml
+x-enrichment:
+  date: '2026-09-12'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v3

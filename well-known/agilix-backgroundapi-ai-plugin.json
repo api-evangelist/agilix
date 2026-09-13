@@ -1,0 +1,12 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Buzz API",
+  "name_for_model": "buzz_api",
+  "description_for_human": "REST API for the Buzz Learning Management System.",
+  "description_for_model": "REST API for the Buzz Learning Management System. Manages courses, enrollments, users, grades, assessments, AI tutoring, and more. Full documentation at https://backgroundapi.agilixbuzz.com/llms.txt or https://backgroundapi.agilixbuzz.com/llms.md",
+  "auth": {
+    "type": "none"
+  },
+  "logo_url": "https://backgroundapi.agilixbuzz.com/js/docs/Images/apple-touch-icon.png",
+  "legal_info_url": "https://backgroundapi.agilixbuzz.com/docs/"
+}

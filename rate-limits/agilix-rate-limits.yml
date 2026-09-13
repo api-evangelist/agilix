@@ -1,0 +1,119 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/ApiRateLimiting.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/ApiRateLimiting.md
+- https://api.agilixbuzz.com/docs/entry/Concept/ApiTimeLimiting.md
+- https://api.agilixbuzz.com/docs/entry/Concept/ServerBusyLimiting.md
+name: Agilix Buzz API rate and time limits
+description: >-
+  Buzz throttles on three distinct axes and the provider is explicit that all three can
+  answer 429 with a Retry-After header, so a client must read the other response headers to
+  tell them apart. (1) Time limiting — a per-customer budget of server processing time,
+  bucketed per endpoint hostname, which is what most legitimate 429s are. (2) Rate limiting
+  — per-endpoint call counts in a five-minute window, applied to security-sensitive and
+  expensive-AI commands. (3) Server-busy limiting — 503 when autoscaling has not caught up.
+  Specific rate-limited commands and their numeric limits are deliberately NOT published
+  ("subject to immediate change in response to security and availability issues"); the
+  provider's stated substitute is that the live limit is always readable from the response
+  headers.
+limit_count: 5
+limits:
+- id: time-limit-interactive
+  type: processing-time
+  scope: per-customer, per-endpoint bucket
+  endpoint: interactiveapi.agilixbuzz.com
+  workload: User-interactive requests where a person is waiting on the response.
+  baseline: 1000 ms of server processing time per second
+  autoscaling: +5 ms/sec increase as the limit is approached, up to a maximum of 10000 ms/sec
+  expected_daily: 8 hours of processing per day
+  window: continuous (token-bucket style)
+  exhaustion_status: 429
+- id: time-limit-background
+  type: processing-time
+  scope: per-customer, per-endpoint bucket
+  endpoint: backgroundapi.agilixbuzz.com
+  workload: Background processing — summaries, reports, synchronization, cascading changes.
+  baseline: 1000 ms of server processing time per second
+  autoscaling: +5 ms/sec increase as the limit is approached, up to a maximum of 10000 ms/sec
+  expected_daily: 2 hours of processing per day
+  window: continuous
+  exhaustion_status: 429
+  note: >-
+    The background threshold is lower than the interactive one on purpose, so background
+    work is throttled long before anything a user is waiting on.
+- id: time-limit-test
+  type: processing-time
+  scope: per-caller
+  endpoint: backoff-testapi.agilixbuzz.com
+  workload: Test endpoint.
+  behaviour: >-
+    Throttles randomly and frequently regardless of system load, so developers can verify
+    their exponential-backoff code actually works.
+  exhaustion_status: 429
+- id: rate-limit-authenticated
+  type: request-count
+  scope: per authenticated user account, partitioned per API or functionality
+  window: 5 minutes
+  limit: not published
+  exhaustion_status: 429
+  applies_to: >-
+    Security-sensitive commands (Login, UpdatePassword and similar) and expensive AI
+    features, which carry per-user limits.
+  note: >-
+    Some commands share a limit partition and some have their own. The observed example in
+    the documentation is X-RateLimit-Limit: 50 with a 284-second reset.
+- id: rate-limit-unauthenticated
+  type: request-count
+  scope: per calling IP address
+  window: 5 minutes
+  limit: not published
+  exhaustion_status: 429
+  applies_to: >-
+    Unauthenticated commands such as VerifyUserEmail and RedeemCommandToken. Login is
+    limited on both an overall basis (against account harvesting) and per target account
+    (against brute-force guessing), so the partition may be the IP, the named account, or
+    both.
+headers:
+- name: X-RateLimit-Limit
+  meaning: Calls to this endpoint allowed per 5-minute period.
+- name: X-RateLimit-Remaining
+  meaning: Calls remaining to this endpoint in the current period.
+- name: X-RateLimit-Reset
+  meaning: Seconds until the rate-limit window ends.
+- name: Retry-After
+  meaning: >-
+    Seconds to wait before retrying. Accurate for the first limited response only; on
+    subsequent ones the server is guessing, assuming the caller re-runs previously rejected
+    requests first at a default 100 ms charge each.
+exhaustion:
+  status: 429
+  body_code: RateLimit
+  example_response: |
+    429 Too Many Requests
+    Retry-After: 8
+    X-RateLimit-Limit: 50
+    X-RateLimit-Remaining: 0
+    X-RateLimit-Reset: 284
+server_busy:
+  status: 503
+  body_code: ServerOverwhelmed
+  note: >-
+    Autoscaling takes a minimum of 30 seconds and up to 15 minutes in extreme cases, so a
+    burst of hundreds of simultaneous requests into a quiet period can trip 503 even under
+    the limits.
+provisioning:
+  note: Customers may contact support to increase provisioned rate limits.
+load_guidance:
+  note: >-
+    The provider publishes an unusual and genuinely useful scheduling hint: interactive load
+    rises within 5-10 minutes of the top of the hour with a smaller rise at the bottom, so
+    periodic integrations should run 10-20 or 40-50 minutes past the hour, avoid 6:00 AM to
+    2:00 PM Eastern for daily jobs, and jitter their intervals (prime numbers or randomness)
+    so multiple integrations do not synchronize.
+observed:
+  note: >-
+    A live anonymous GET of cmd=getstatus on all three endpoint hosts on 2026-09-12 returned
+    200 with no X-RateLimit-* headers present, consistent with the documentation: the headers
+    appear only on calls that are actually subject to rate limiting.
+  checked: '2026-09-12'

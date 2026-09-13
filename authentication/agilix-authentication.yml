@@ -1,0 +1,129 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/OAuth.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/OAuth.md
+- https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+- https://api.agilixbuzz.com/docs/entry/Concept/Rights.md
+name: Agilix Buzz (DLAP / xLi) API authentication
+description: >-
+  The Buzz API authenticates machine callers with OAuth 2.0 client credentials carrying a
+  JWT client assertion (RFC 6749 + RFC 7523): the integration signs a short-lived assertion
+  with an RSA private key whose public key is registered against an "Application Identity"
+  user account, POSTs it to the token endpoint, and receives a one-hour Bearer access token
+  it presents on every command. A legacy username/password flow (Login3) still works and is
+  still supported, but the provider documents it as not recommended for new integrations.
+  Authorization is not scope-based: every command names the Rights it requires against an
+  entity (for example DeleteCourse@courseid), and those rights are granted to the
+  Application Identity account exactly as they would be to a person.
+  There is no OpenAPI document to derive securitySchemes from — this profile is read from
+  the provider's own published authentication reference.
+primary_scheme: oauth2
+schemes:
+- id: oauth2_jwt_client_credentials
+  type: oauth2
+  flow: clientCredentials
+  preferred: true
+  token_endpoint: '{server}/api/oauth/token'
+  token_endpoint_example: https://backgroundapi.agilixbuzz.com/api/oauth/token
+  grant_type: client_credentials
+  client_assertion_type: urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+  client_id: The userid of the Application Identity account created with CreateUsers2 (type applicationidentity)
+  signing_algorithm: RS256
+  key_size: 2048-bit RSA or larger
+  key_registration:
+    method: PUT
+    path: '{server}/api/users/{userid}/keys/{kid}'
+    content_type: application/x-pem-file
+    body: SubjectPublicKeyInfo (SPKI) PEM public key
+    success_status: 204
+    rights_required: Update User on the Application Identity account
+    note: >-
+      kid is caller-chosen (ASCII letters, digits, '-', '_', '.'; max 128 chars) and must
+      match the kid header of the JWT assertion. PUTting an existing kid replaces the key
+      in place and immediately breaks any running application still using the old one, so
+      rotation is done by adding a second kid, cutting traffic over, then deleting the first.
+  access_token:
+    type: Bearer
+    header: 'Authorization: Bearer <token>'
+    expires_in: 3600
+    response_cache_control: no-store
+    refresh_guidance: Re-authenticate every half hour for long-running processes.
+  scopes: []
+  scopes_note: >-
+    The provider documents no OAuth scope surface. Authorization is carried by the Buzz
+    Rights model (per-command rights on a domain, course, user or enrollment entity), so
+    there is no scopes/ artifact for this provider.
+  browser_use: >-
+    Explicitly prohibited by the provider — the private key cannot be protected in a
+    browser; this flow is server-side only.
+- id: legacy_password_login
+  type: http
+  scheme: session-token
+  deprecated: true
+  commands:
+  - Login3
+  - Login2
+  note: >-
+    Interactive username/password sign-in that mints a session token. Login2 is listed under
+    Obsolete Commands and its own page says API users should now authenticate with OAuth 2.0
+    Application Identity instead. Login3 remains the like-for-like successor for interactive
+    sign-in only. Enforces password policy, account lockout and multi-factor; returns
+    SecondFactorRequired / SecondFactorConfigurationNowRequired when a second factor is owed.
+- id: token_transport
+  type: apiKey
+  in: header
+  name: Authorization
+  alternates:
+  - location: request body
+    name: _token
+    note: For XML/JSON POST bodies where a header cannot be sent.
+  - location: query
+    name: _token
+    discouraged: true
+    note: >-
+      The provider tells callers to use the query-string form only for contexts like
+      browser-embedded resource URLs, because URLs are recorded in logs.
+  cookies: >-
+    Cookie-based authentication tokens are deprecated by the provider for cross-site
+    scripting reasons.
+federation:
+- protocol: SAML 2.0
+  role: service provider / single sign-on for Buzz end users
+  evidence: https://www.agilix.com/security
+  note: Buzz supports SSO via SAML 2.0 and Google authentication; SAML single logout is documented in the API release notes.
+- protocol: LTI 1.3 / OpenID Connect
+  role: platform (Buzz is the LTI platform; tools launch into it)
+  jwks_uri: https://api.agilixbuzz.com/lti/platform/jwks
+  authentication_endpoint: https://api.agilixbuzz.com/lti/authentication
+  token_endpoint: '{server}/lti/accesstoken/{entityid}'
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/LTIIntegration.md
+multi_factor:
+  supported: true
+  commands:
+  - SecondFactorAuthenticate
+  - CreateSecondFactorAuthenticationSecret
+  - SetupSecondFactorAuthentication
+  - ClearSecondFactorAuthentication
+  note: >-
+    TOTP-style second factor with a remembermfa token; policy-driven via the domain password
+    policy's mfaenforcement attribute. A documented reason to prefer OAuth for integrations
+    is that JWT assertion auth works in domains where MFA is required for administrative
+    accounts.
+password_policy:
+  documented: true
+  url: https://api.agilixbuzz.com/docs/entry/Schema/PasswordPolicy.md
+  commands:
+  - GetEffectivePasswordPolicy
+  - CheckPasswordQuality
+  note: >-
+    Per-domain policy covering minimum length, character classes, entropy, breached-password
+    (pwned) checking, expiry, lockout and MFA. Each requirement is inert until its matching
+    enforcement attribute is set — the provider documents this explicitly.
+standards:
+- RFC 6749 (OAuth 2.0)
+- RFC 7523 (JWT Profile for OAuth 2.0 Client Authentication)
+- RFC 7519 (JSON Web Token)
+- RFC 7517 (JSON Web Key)
+- SAML 2.0
+- OpenID Connect (as used by LTI 1.3 launch)

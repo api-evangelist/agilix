@@ -1,0 +1,180 @@
+generated: '2026-09-12'
+method: searched
+source: https://api.agilixbuzz.com/docs/entry/Concept/LTIIntegration.md
+docs:
+- https://api.agilixbuzz.com/docs/entry/Concept/LTIIntegration.md
+- https://api.agilixbuzz.com/docs/entry/Enum/LTIServices.md
+- https://api.agilixbuzz.com/docs/entry/Concept/OAuth.md
+- https://www.agilix.com/security
+- https://www.agilix.com/integrations
+name: Agilix Buzz standards conformance
+description: >-
+  Standards the Buzz API declares in its own contract surface, with the exact location that
+  declares each. The load-bearing finding is the education-domain one: Buzz is a 1EdTech LTI
+  1.3 / LTI Advantage PLATFORM, not merely a tool that speaks LTI, and it proves it with a
+  live first-party JWKS at https://api.agilixbuzz.com/lti/platform/jwks plus an
+  enabledltiservices bitfield in Domain Data whose values are the LTI Advantage service names
+  themselves (AGS, NRPS, DL). A district that already speaks LTI integrates its content tools
+  with no bespoke connector.
+entries:
+- id: lti-1.3
+  name: 1EdTech Learning Tools Interoperability 1.3
+  domain_standard: true
+  conforms: true
+  role: platform
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/LTIIntegration.md
+  evidence_detail: >-
+    "Buzz enables LTI integration through the support of LTI Advantage, which includes core
+    LTI 1.3, Name and Role Provisioning Services, Deep Linking, and Assignment and Grade
+    Services." Platform registration parameters are published: Issuer = the absolute Buzz API
+    URL; Key Set URL = /lti/platform/jwks; OpenID Connect Auth URL = /lti/authentication;
+    OAuth2 Access Token URL = /lti/accesstoken/{entityid}.
+  machine_evidence:
+    url: https://api.agilixbuzz.com/lti/platform/jwks
+    status: 200
+    content: RSA RS256 signing JWKS
+    checked: '2026-09-12'
+- id: lti-advantage-ags
+  name: LTI Advantage — Assignment and Grade Services
+  domain_standard: true
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Enum/LTIServices.md
+  evidence_detail: 'enabledltiservices bit 0x1 = AGS ("Assignment and Grade Services is enabled").'
+- id: lti-advantage-nrps
+  name: LTI Advantage — Names and Role Provisioning Services
+  domain_standard: true
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Enum/LTIServices.md
+  evidence_detail: 'enabledltiservices bit 0x2 = NRPS.'
+- id: lti-advantage-deep-linking
+  name: LTI Advantage — Deep Linking
+  domain_standard: true
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Enum/LTIServices.md
+  evidence_detail: 'enabledltiservices bit 0x4 = DL.'
+- id: oneroster
+  name: 1EdTech OneRoster
+  domain_standard: true
+  conforms: true
+  evidence: https://www.agilix.com/integrations
+  evidence_detail: >-
+    Named on the integrations page as the 1EdTech standard Buzz uses for "secure automated
+    user enrollment and course rostering". Agilix also maintains a 1EdTech partner page at
+    https://www.agilix.com/partners/1edtech. Not declared inside the DLAP command reference,
+    so the evidence here is the product surface rather than the contract.
+  evidence_strength: docs
+- id: scorm
+  name: SCORM run-time environment
+  domain_standard: true
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Command/GetScoData.md
+  evidence_detail: >-
+    GetScoData / PutScoData exchange SCORM-defined cmi.* run-time data-model variables
+    (cmi.completion_status, cmi.score.scaled, cmi.score.raw, cmi.score.max, cmi.interactions,
+    cmi.total_time) and the docs reference the ADL SCORM Runtime Environment manual. PutScoData
+    strips read-only fields and accumulates cmi.total_time as the spec requires.
+- id: oauth2-client-credentials
+  name: RFC 6749 OAuth 2.0 client credentials
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/OAuth.md
+  evidence_detail: 'grant_type=client_credentials at {server}/api/oauth/token; "This flow follows RFC 6749".'
+- id: rfc7523-jwt-client-assertion
+  name: RFC 7523 JWT profile for OAuth 2.0 client authentication
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/OAuth.md
+  evidence_detail: 'client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer; named as RFC 7523 in the docs.'
+- id: rfc7519-jwt
+  name: RFC 7519 JSON Web Token
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/OAuth.md
+- id: rfc7517-jwks
+  name: RFC 7517 JSON Web Key Set
+  conforms: true
+  evidence: https://api.agilixbuzz.com/lti/platform/jwks
+  evidence_detail: 'Live keys[] document with kty/alg/use/n/e, RS256.'
+- id: oidc-lti-launch
+  name: OpenID Connect (third-party-initiated launch, as profiled by LTI 1.3)
+  conforms: true
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/LTILinks.md
+  evidence_detail: >-
+    Buzz issues an ID Token with aud/exp/iat/iss/nbz/nonce/sub plus name claims during the
+    OpenID Connect Launch Flow.
+  note: >-
+    This is OIDC as used inside the LTI launch, not a general-purpose OIDC provider — no
+    /.well-known/openid-configuration is served on any Agilix host.
+- id: saml2
+  name: SAML 2.0
+  conforms: true
+  evidence: https://www.agilix.com/security
+  evidence_detail: >-
+    "Single Sign-On (SSO) through SAML 2.0"; SAML single-logout behaviour is maintained in the
+    API release notes (2026-09-10).
+- id: soc2
+  name: SOC 2
+  conforms: true
+  evidence: https://www.agilix.com/security
+  evidence_detail: >-
+    "Agilix Labs recently completed its SOC 2 examination, which evaluated our controls
+    relevant to security, availability, processing integrity, confidentiality, and privacy."
+    The report itself is available on request to prospective customers via security@agilix.com.
+  evidence_strength: vendor claim on own site; report not public
+- id: ferpa
+  name: FERPA
+  conforms: true
+  evidence: https://www.agilix.com/llms.txt
+  evidence_detail: >-
+    "BusyBee ... Runs on AWS; FERPA compliant; student data is not used to train AI models."
+  evidence_strength: vendor claim
+- id: wcag
+  name: WCAG accessibility conformance
+  conforms: true
+  evidence: https://www.agilix.com/accessibility
+  evidence_detail: Agilix publishes an accessibility page stating WCAG standards for Buzz and Dawn.
+  evidence_strength: docs
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+  evidence_detail: >-
+    Errors are carried in a proprietary {"response":{"code":...}} envelope, usually under an
+    HTTP 200. No application/problem+json anywhere.
+- id: rfc9116
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returned 404 on all six probed hosts (2026-09-12)
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: >-
+    No OpenAPI or Swagger document is published. /openapi.json, /openapi.yaml, /swagger.json,
+    /docs/openapi.json and /api-docs were probed on api.agilixbuzz.com and
+    backgroundapi.agilixbuzz.com and all returned 404 on 2026-09-12. The Buzz API is a
+    command-style (DLAP) interface documented as 291 named commands in Markdown, with an
+    llms.txt index; it is not path-and-method shaped.
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: >-
+    A substantial event surface exists (70 Data Stream event types) but no AsyncAPI document
+    is published for it. See asyncapi/agilix-datastream-webhooks.yml.
+- id: idempotency
+  name: Idempotent write semantics (Idempotency-Key or equivalent)
+  conforms: false
+  evidence: https://api.agilixbuzz.com/docs/entry/Concept/CommandUsage.md
+  evidence_detail: No replay-protection mechanism is documented for any mutating command.
+- id: mcp
+  name: Model Context Protocol
+  conforms: false
+  evidence: No hosted or stdio MCP server published; /mcp returned 404 on api.agilixbuzz.com (2026-09-12).
+- id: a2a
+  name: A2A Agent Card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and /.well-known/agent.json returned 404 on all six probed
+    hosts (2026-09-12).
+sector: education
+regime: education
+regime_note: >-
+  K-12 student data. FERPA is the governing US regime and Agilix claims compliance for
+  BusyBee specifically. COPPA and state student-privacy laws are not addressed on any public
+  page we could read; no student data privacy pledge signature was found.

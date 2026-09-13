@@ -1,0 +1,99 @@
+generated: '2026-09-12'
+method: derived
+source: https://api.agilixbuzz.com/llms.txt
+status: candidate
+name: Agilix Buzz API — candidate MCP tool surface
+description: >-
+  Agilix Labs publishes no MCP server. This is a DERIVED candidate tool list, proposed by API
+  Evangelist from the provider's own published command reference — nothing here is shipped by
+  Agilix and no endpoint below is callable. It is recorded so the gap is legible: Buzz already
+  publishes the two things an MCP server is usually built from — a machine-readable
+  documentation index (llms.txt, 660 entries, plus an ai-plugin.json manifest on two API hosts
+  naming it) and 291 individually documented commands with request and response shapes — but
+  no server binds them to tools.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+search:
+  checked: '2026-09-12'
+  probes:
+  - url: https://api.agilixbuzz.com/mcp
+    status: 404
+  - url: https://api.agilixbuzz.com/.well-known/ai-plugin.json
+    status: 200
+    note: >-
+      An OpenAI-plugin-era manifest, not MCP. auth.type is "none" and it points models at
+      llms.txt/llms.md rather than at a tool endpoint.
+  registries_and_search:
+  - Web search for an Agilix/Buzz MCP server returned nothing first-party.
+  - AgilixLabs GitHub org (8 public repos) contains no MCP server; the seven Buzz repos are
+    language sample clients and the eighth is an unrelated Rust ACME client.
+grounding:
+  contract: none
+  note: >-
+    No OpenAPI exists to bind tools to operationIds, so the candidate tools below are named
+    against REAL documented DLAP command names (verified present in
+    https://api.agilixbuzz.com/sitemap.xml, which lists 291 /docs/Command/ pages). No input
+    schemas are asserted — the provider documents parameters per command page in Markdown
+    tables, not in a machine-readable schema, so an implementer would have to transcribe them.
+candidate_tools:
+- tool: buzz_get_status
+  commands: [GetStatus]
+  auth: none
+  consequence: read
+- tool: buzz_list_courses
+  commands: [ListCourses, GetCourse2]
+  auth: bearer
+  consequence: read
+- tool: buzz_list_users
+  commands: [ListUsers, GetUser2]
+  auth: bearer
+  consequence: read
+- tool: buzz_list_enrollments
+  commands: [ListEnrollments, GetEnrollment3]
+  auth: bearer
+  consequence: read
+- tool: buzz_get_domain
+  commands: [GetDomain2, ListDomains]
+  auth: bearer
+  consequence: read
+- tool: buzz_get_gradebook
+  commands: [GetEnrollmentGradebook2, GetEntityGradebook3, GetUserGradebook2]
+  auth: bearer
+  consequence: read
+- tool: buzz_get_submission
+  commands: [GetStudentSubmission, GetTeacherResponse]
+  auth: bearer
+  consequence: read
+  note: Student work — FERPA-governed. A real server should gate this behind explicit consent.
+- tool: buzz_create_users
+  commands: [CreateUsers2]
+  auth: bearer
+  consequence: write
+  reversal: DeleteUsers / RestoreUser
+- tool: buzz_create_enrollments
+  commands: [CreateEnrollments]
+  auth: bearer
+  consequence: write
+  reversal: DeleteEnrollments / RestoreEnrollment
+- tool: buzz_put_items
+  commands: [PutItems, GetManifest]
+  auth: bearer
+  consequence: write
+  reversal: DeleteItems / RestoreItems
+- tool: buzz_configure_data_stream
+  commands: [SetDataStreamConfiguration, GetDataStreamConfiguration, ValidateDataStreamConfiguration]
+  auth: bearer
+  consequence: write
+  note: >-
+    ValidateDataStreamConfiguration is the one place in this API with a native rehearsal
+    operation, which makes it the natural first tool for an agent to be trusted with.
+risk_notes:
+- The Buzz API documents no idempotency mechanism (conventions/agilix-conventions.yml), so any
+  MCP tool wrapping a write must implement its own de-duplication before an agent retries.
+- Delete commands are soft deletes with matching Restore commands, but no retention window is
+  published, so an agent cannot know how long a reversal remains possible.

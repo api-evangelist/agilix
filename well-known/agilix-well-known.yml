@@ -1,0 +1,132 @@
+generated: '2026-09-12'
+method: probed
+source: https://api.agilixbuzz.com/.well-known/ai-plugin.json
+name: Agilix Labs well-known discovery documents
+description: >-
+  Probe of the RFC 8615 /.well-known/ namespace on every host this record knows: the
+  corporate site (www.agilix.com / agilix.com), the Buzz API documentation host
+  (api.agilixbuzz.com), the two production Buzz API endpoints (backgroundapi and
+  interactiveapi.agilixbuzz.com), the Buzz product host (agilixbuzz.com) and the Zendesk
+  help centre (support.agilix.com). Two documents were served: an OpenAI-style
+  ai-plugin.json manifest on api.agilixbuzz.com and on backgroundapi.agilixbuzz.com, each
+  naming that host's own llms.txt as the model-facing documentation.
+hosts:
+- host: www.agilix.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+- host: agilix.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: api.agilixbuzz.com
+  note: Buzz API documentation host (xLi / DLAP reference).
+  documents:
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    file: agilix-api-ai-plugin.json
+    content_type: application/json
+    note: >-
+      Real JSON manifest; name_for_model "buzz_api", auth type none, points models at
+      https://api.agilixbuzz.com/llms.txt and /llms.md.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+- host: backgroundapi.agilixbuzz.com
+  note: Production Buzz API endpoint for background/batch workloads.
+  documents:
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    file: agilix-backgroundapi-ai-plugin.json
+    content_type: application/json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: agilixbuzz.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+- host: support.agilix.com
+  note: Zendesk help centre; serves its own HTML 404 body for every /.well-known/ path.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+related:
+- type: LTI platform JWKS
+  url: https://api.agilixbuzz.com/lti/platform/jwks
+  status: 200
+  note: >-
+    Not a /.well-known/ path, but a live first-party JSON Web Key Set the Buzz platform
+    publishes for LTI 1.3 tool registration; documented at
+    https://api.agilixbuzz.com/docs/entry/Concept/LTIIntegration.md
+x-evidence:
+  checked: '2026-09-12'
+  user_agent: browser
+  paths_probed_per_host: 9
+  hits: 2
