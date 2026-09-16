@@ -38,6 +38,19 @@ tags:
 - LTI
 - SCORM
 - Artificial Intelligence
+- Event
+tags_raw:
+- Company
+- Education
+- EdTech
+- Learning Management System
+- K-12
+- Online Learning
+- Tutoring
+- Assessment
+- LTI
+- SCORM
+- Artificial Intelligence
 - Events
 apis:
 - aid: agilix:buzz-api
@@ -60,6 +73,18 @@ apis:
   baseURL: https://backgroundapi.agilixbuzz.com/cmd
   image: https://cdn.prod.website-files.com/63e3df066454cf5d1a3762bf/63fcec436021ff40163c2ad8_logo.png
   tags:
+  - Education
+  - Learning Management System
+  - K-12
+  - Courses
+  - Enrollments
+  - Assessment
+  - Gradebook
+  - LTI
+  - SCORM
+  - Event
+  - Webhook
+  tags_raw:
   - Education
   - Learning Management System
   - K-12
