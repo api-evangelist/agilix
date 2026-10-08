@@ -135,6 +135,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: RateLimits
+  url: rate-limits/agilix-rate-limits.yml
 - type: VulnerabilityDisclosure
   url: security/agilix-vulnerability-disclosure.yml
 - type: DomainSecurity
