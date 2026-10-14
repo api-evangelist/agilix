@@ -2,6 +2,7 @@ generated: '2026-10-13'
 method: searched
 checked:
 - https://aws.amazon.com/marketplace/
+- https://site.imsglobal.org/certifications
 marketplace_apps: []
 edges:
 - partner_name: AWS Marketplace
@@ -19,3 +20,77 @@ edges:
   seller_name: Agilix Labs
   detected_by: sweep-cloud-marketplaces.py
   detected: '2026-10-13'
+- partner_name: 1EdTech
+  partner: null
+  type: contract
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://site.imsglobal.org/certifications
+  category: 1EdTech certified products
+  contract_reference:
+    register: 1EdTech certified product directory (TrustEd Apps)
+    spec_file: null
+    standard: 1EdTech
+    role: Affiliate Member
+    registered_name: Agilix Labs, Inc.
+    matched_domain: agilix.com
+    matched_by: domain
+    standards:
+    - Common Cartridge v1.3
+    - LTI Advantage
+    - LTI Advantage Complete
+    - Learning Tools Interoperability (LTI) v1.3
+    - OneRoster 1.1
+    - Thin Common Cartridge 1.3
+    certified_products:
+    - product: Agilix Buzz
+      version: vCloud
+      standards:
+      - Common Cartridge v1.3
+      - LTI Advantage
+      - LTI Advantage Complete
+      - Learning Tools Interoperability (LTI) v1.3
+      - OneRoster 1.1
+      - Thin Common Cartridge 1.3
+      implementation:
+      - 'Export: No'
+      - 'Extension: LTI Assignment & Grade Services 2.0'
+      - 'Extension: LTI Deep Linking 2.0'
+      - 'Extension: LTI Names and Role Provisioning Services 2.0'
+      - 'Gradebook: REST Data Consumer Gradebook Pull Core'
+      - 'Resources: REST Data Consumer Resources Core'
+      - 'Rostering: CSV Rostering Import Bulk'
+      - 'Rostering: REST Data Consumer Rostering Core'
+      - 'Supports: Basic LTI'
+      - 'Supports: Discussion Forum'
+      - 'Supports: Question Types - Essay'
+      - 'Supports: Question Types - Multiple Choice/ Multiple Response'
+      - 'Supports: Question Types - Pattern Match'
+      - 'Supports: Roles Metadata'
+      - 'Type: Platform (Consumer)'
+      - 'Type: Runner'
+      attributes:
+      - Certified Product
+      - TrustEd Apps Seal
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/agilix-labs-inc/agilix-buzz/vcloud
+    - product: PublishAnywhere
+      version: vCloud
+      standards:
+      - LTI Advantage
+      - LTI Advantage Complete
+      - Learning Tools Interoperability (LTI) v1.3
+      implementation:
+      - 'Extension: LTI Assignment & Grade Services 2.0'
+      - 'Extension: LTI Deep Linking 2.0'
+      - 'Extension: LTI Names and Role Provisioning Services 2.0'
+      - 'Type: Tool'
+      attributes:
+      - Certified Product
+      - Vetted
+      lapsed: false
+      url: https://site.imsglobal.org/certifications/agilix-labs-inc/publishanywhere/vcloud
+    detected_by: sweep-edtech.py
+    detected: '2026-10-14'
