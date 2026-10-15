@@ -3,6 +3,7 @@ method: searched
 checked:
 - https://aws.amazon.com/marketplace/
 - https://site.imsglobal.org/certifications
+- https://zapier.com/api/v4/apps/
 marketplace_apps: []
 edges:
 - partner_name: AWS Marketplace
@@ -94,3 +95,30 @@ edges:
       url: https://site.imsglobal.org/certifications/agilix-labs-inc/publishanywhere/vcloud
     detected_by: sweep-edtech.py
     detected: '2026-10-14'
+- partner_name: Zapier
+  partner: zapier
+  partner_match: aggregator
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://zapier.com/apps/agilix-dawn/integrations
+  category: null
+  contract_reference:
+    register: Zapier app directory (zapier.com/api/v4/apps)
+    spec_file: null
+    role: ipaas-connector:zapier
+    registered_name: Agilix Dawn
+    matched_domain: agilix.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: agilix-dawn
+    beta: false
+    builder: unknown (not in the directory record)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-15'
+source:
+- https://zapier.com/api/v4/apps/
