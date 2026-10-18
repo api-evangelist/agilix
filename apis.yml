@@ -30,9 +30,9 @@ tags:
 - Company
 - Education
 - EdTech
-- Learning Management System
+- LMS
 - K-12
-- Online Learning
+- E-Learning
 - Tutoring
 - Assessment
 - LTI
@@ -74,7 +74,7 @@ apis:
   image: https://cdn.prod.website-files.com/63e3df066454cf5d1a3762bf/63fcec436021ff40163c2ad8_logo.png
   tags:
   - Education
-  - Learning Management System
+  - LMS
   - K-12
   - Courses
   - Enrollment
