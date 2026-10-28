@@ -64,10 +64,119 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Agilix Labs, Inc. is a K-12 education technology company in Orem, Utah that builds the Agilix Learning Suite — a white-label, multi-tenant set of products schools, districts, virtual and online schools and curriculum publishers use to author, deliver and assess online and blended learning: Buzz (the LMS), TutorKit, Publish Anywhere, Dawn and BusyBee (an AI teaching assistant).
+Agilix Labs, Inc. is a K-12 education technology company in Orem, Utah that builds the Agilix Learning Suite — a white-label, multi-tenant set of products schools, districts, virtual and online schools and curriculum publishers use to author, deliver and assess online and blended learning. The suite is Buzz (the learning management system), TutorKit (tutoring program management), Publish Anywhere (LTI-based content distribution to any LMS), Dawn (mobile, offline-capable delivery) and BusyBee (an AI teaching assistant built into Buzz). Agilix has built learning technology for more than 25 years and reaches millions of teachers and students in 20+ languages across 200+ countries, running on AWS. Its public developer surface is the Buzz API — also called DLAP or xLi — a command-style HTTP API with 291 documented commands covering domains, users, courses, enrollments, items, questions, submissions, gradebooks, objectives, rights and licensing, plus a configurable Data Stream event feed with roughly 70 event types and five delivery targets including HTTPS webhooks. Buzz is a 1EdTech LTI 1.3 / LTI Advantage platform and exchanges SCORM run-time data. Authentication is OAuth 2.0 client credentials with a JWT client assertion (RFC 6749 + RFC 7523) against an Application Identity account. Agilix publishes an llms.txt for both its corporate site and its API documentation, an ai-plugin.json manifest on two API hosts, weekly dated release notes, and seven first-party sample client libraries on GitHub — but no OpenAPI, no MCP server and no agent card.
 
-Its public developer surface is the **Buzz API**, also called DLAP or xLi — a command-style HTTP API with 291 documented commands, a Data Stream event feed of roughly 70 event types with HTTPS webhook / Kinesis / SQS / email delivery, OAuth 2.0 JWT client-credentials authentication, weekly dated release notes, an `llms.txt` on both the corporate and API hosts, and seven first-party sample client libraries on GitHub. Buzz is a 1EdTech LTI 1.3 / LTI Advantage platform and exchanges SCORM run-time data. No OpenAPI, MCP server or agent card is published.
+**Areas:** Company · Education · EdTech · LMS · K-12 · E-Learning · Tutoring · Assessment · LTI · SCORM · Artificial Intelligence · Event
 
-- Company: https://www.agilix.com/
-- API documentation: https://api.agilixbuzz.com/docs/
-- GitHub: https://github.com/AgilixLabs
+## Agilix on APIs.io
+
+Everything profiled for Agilix is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/agilix/](https://apis.io/providers/agilix/)** — or go straight to one of the APIs or properties below.
+
+### APIs (1)
+
+- [Agilix Buzz API (DLAP / xLi)](https://apis.io/apis/agilix/buzz-api/) — The Buzz API is the programmable surface of the Agilix Learning Suite. It is a command-style HTTP API rather than a path-and-method REST API: every one of…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Agilix Datastream Webhooks](https://apis.io/asyncapis/agilix/agilix-datastream-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Agilix Buzz API — candidate MCP tool surface](https://apis.io/servers/agilix/agilix-buzz-api-candidate-mcp-tool-surface/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Agilix Authentication](https://apis.io/security/agilix/agilix-authentication/)
+- [Agilix Domain Security](https://apis.io/security/agilix/agilix-domain-security/)
+- [Agilix Trust Center](https://apis.io/security/agilix/agilix-trust-center/)
+- [Agilix Vulnerability Disclosure](https://apis.io/security/agilix/agilix-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Agilix Plans Pricing](https://apis.io/plans/agilix/agilix-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Agilix Rate Limits](https://apis.io/rate-limits/agilix/agilix-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.agilix.com/)
+- [Documentation](https://api.agilixbuzz.com/docs/entry/Concept/Overview.md)
+- [Getting started](https://api.agilixbuzz.com/docs/entry/Concept/Tutorial.md)
+- [API reference](https://api.agilixbuzz.com/docs/all.md)
+- [Support](https://support.agilix.com/hc/en-us)
+- [Blog](https://www.agilix.com/blog)
+- [Privacy policy](https://www.agilix.com/privacy)
+- [GitHub](https://github.com/AgilixLabs)
+
+## API Evangelist rating
+
+**Kin Score 48.6** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 74.1 |
+| Contract quality | 39.0 |
+| Contract governance | 0.0 |
+| Operational transparency | 76.3 |
+| Developer ergonomics | 73.2 |
+| Access clarity | 26.3 |
+
+**Agent readiness 26.1** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 29.1** — Education & Research
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/agilix/](https://apis.io/providers/agilix/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Agilix: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/agilix/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
